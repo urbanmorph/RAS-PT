@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<head>    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    <script>
+        L_NO_TOUCH = false;
+        L_DISABLE_3D = false;
+    </script>
+    <style>
+       .foliumtooltip table{
+            margin: auto;
+        }
+        .foliumtooltip tr{
+            text-align: left;
+        }
+        .foliumtooltip th{
+            padding: 2px; padding-right: 8px;
+        }
+    </style>      
+</head>
+<body>
+    <div class="folium-map" id="map"></div>    
+</body>
+<script type="module">
+    import wardsData from "./bengaluru-wards-joined.json";
+    import busStopsData from "./bus-stops-data.json";
+
+    // Create instance of leaflet map
+    var mapInstance = L.map(
+        "map",
+        {
+            center: [12.9796734, 77.5912443],
+            crs: L.CRS.EPSG3857,
+            zoom: 11,
+            zoomControl: true,
+            preferCanvas: false,
+        }
+    );
+
+    // Add map layer to show the wards and bus stops on
+    var tileLayer = L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+            "attribution": "Data by \u0026copy; \u003ca href=\"http://openstreetmap.org\"\u003eOpenStreetMap\u003c/a\u003e, under \u003ca href=\"http://www.openstreetmap.org/copyright\"\u003eODbL\u003c/a\u003e.",
+            "detectRetina": false,
+            "maxNativeZoom": 18,
+            "maxZoom": 18,
+            "minZoom": 0,
+            "noWrap": false,
+            "opacity": 1,
+            "subdomains": "abc",
+            "tms": false
+        }
+    ).addTo(mapInstance);
+
+    // Add ward shapes to the map from geojson
+    var wardsGeoJson = L.geoJson(null, {
+        style: {"color": "gray", "fillOpacity": 0.2, "weight": 1},
+    });
+
+    function addDataToWardsGeoJson(data) {
+        wardsGeoJson
+            .addData(data)
+            .addTo(mapInstance);
+    }
+    addDataToWardsGeoJson(wardsData);
+
+    // Add tooltip to each ward
+    wardsGeoJson.bindTooltip(
+        function(layer){
+            return `<table>
+                <tr><th>Ward number</th><td>${layer.feature.properties.Ward_Number}</td></tr>
+                <tr><th>Ward name</th><td>${layer.feature.properties.Ward_Name}</td></tr>
+            </table>`
+        },
+        {"className": "foliumtooltip", "sticky": true}
+    );
+
+    // Add circle marker and bind tooltip with stop name for each entry of the bus stops data
+    busStopsData.forEach(function (b) {
+        var circleMarker = L.circleMarker(
+            [b.lat, b.lon],
+            {
+                "bubblingMouseEvents": true,
+                "color": "green",
+                "dashArray": null,
+                "dashOffset": null,
+                "fill": true,
+                "fillColor": "#3186cc",
+                "fillOpacity": 0.2,
+                "fillRule": "evenodd",
+                "lineCap": "round",
+                "lineJoin": "round",
+                "opacity": 1.0,
+                "radius": 5,
+                "stroke": true,
+                "weight": 3
+            }
+        ).addTo(mapInstance);
+        circleMarker.bindTooltip(
+            `<div>
+                 ${b.stop_name}
+             </div>`,
+            {"sticky": true}
+        );
+    });
+</script>
