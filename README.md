@@ -1,7 +1,7 @@
 # RAS-PT
 ___
-This repo contains the source code for the RAS-PT initiative
-Reliable, Accessible and Safe - Public Transport
+This repo contains the source code for the RAS-PT initiative.  
+[Reliable, Accessible and Safe - Public Transport](https://urbanmorph.github.io/RAS-PT/)
 
 
 ## Getting started
