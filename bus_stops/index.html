@@ -37,6 +37,7 @@
     import wardsData from "./bengaluru-wards-joined.json";
     import busStopsData from "./bus-stops-data.json";
 
+    // Create instance of leaflet map
     var mapInstance = L.map(
         "map",
         {
@@ -48,6 +49,7 @@
         }
     );
 
+    // Add map layer to show the wards and bus stops on
     var tileLayer = L.tileLayer(
         "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         {
@@ -63,94 +65,34 @@
         }
     ).addTo(mapInstance);
 
-    function geo_json_d243e17fe39f4214b67aa3f0bd71f142_onEachFeature(feature, layer) {
-        layer.on({
-        });
-    };
-
-    var geo_json_d243e17fe39f4214b67aa3f0bd71f142 = L.geoJson(null, {
-            onEachFeature: geo_json_d243e17fe39f4214b67aa3f0bd71f142_onEachFeature,
-        
-            style: {"color": "gray", "fillOpacity": 0.2, "weight": 1},
+    // Add ward shapes to the map from geojson
+    var wardsGeoJson = L.geoJson(null, {
+        style: {"color": "gray", "fillOpacity": 0.2, "weight": 1},
     });
 
-    function geo_json_d243e17fe39f4214b67aa3f0bd71f142_add (data) {
-        geo_json_d243e17fe39f4214b67aa3f0bd71f142
+    function addDataToWardsGeoJson(data) {
+        wardsGeoJson
             .addData(data)
             .addTo(mapInstance);
     }
-    geo_json_d243e17fe39f4214b67aa3f0bd71f142_add(wardsData);
+    addDataToWardsGeoJson(wardsData);
 
-        
-    
-    geo_json_d243e17fe39f4214b67aa3f0bd71f142.bindTooltip(
-    function(layer){
-    let div = L.DomUtil.create('div');
-    
-    let handleObject = feature=>typeof(feature)=='object' ? JSON.stringify(feature) : feature;
-    let fields = ["Ward_Number", "Ward_Name"];
-    let aliases = ["Ward Number", "Ward Name"];
-    let table = '<table>' +
-        String(
-        fields.map(
-        (v,i)=>
-        `<tr>
-            <th>${aliases[i]}</th>
-            
-            <td>${handleObject(layer.feature.properties[v])}</td>
-        </tr>`).join(''))
-    +'</table>';
-    div.innerHTML=table;
-    
-    return div
-    }
-    ,{"className": "foliumtooltip", "sticky": true});
+    // Add tooltip to each ward
+    wardsGeoJson.bindTooltip(
+        function(layer){
+            return `<table>
+                <tr><th>Ward number</th><td>${layer.feature.properties.Ward_Number}</td></tr>
+                <tr><th>Ward name</th><td>${layer.feature.properties.Ward_Name}</td></tr>
+            </table>`
+        },
+        {"className": "foliumtooltip", "sticky": true}
+    );
 
-        function geo_json_39ecf94198774e478cdc7dca27f96184_onEachFeature(feature, layer) {
-            layer.on({
-            });
-        };
-        var geo_json_39ecf94198774e478cdc7dca27f96184 = L.geoJson(null, {
-                onEachFeature: geo_json_39ecf94198774e478cdc7dca27f96184_onEachFeature,
-            
-                style: {"color": "gray", "fillOpacity": 0.2, "weight": 1},
-        });
-
-        function geo_json_39ecf94198774e478cdc7dca27f96184_add (data) {
-            geo_json_39ecf94198774e478cdc7dca27f96184
-                .addData(data)
-                .addTo(mapInstance);
-        }
-            geo_json_39ecf94198774e478cdc7dca27f96184_add(wardsData);
-
-        
-    
-    geo_json_39ecf94198774e478cdc7dca27f96184.bindTooltip(
-    function(layer){
-    let div = L.DomUtil.create('div');
-    
-    let handleObject = feature=>typeof(feature)=='object' ? JSON.stringify(feature) : feature;
-    let fields = ["Ward_Number", "Ward_Name"];
-    let aliases = ["Ward Number", "Ward Name"];
-    let table = '<table>' +
-        String(
-        fields.map(
-        (v,i)=>
-        `<tr>
-            <th>${aliases[i]}</th>
-            
-            <td>${handleObject(layer.feature.properties[v])}</td>
-        </tr>`).join(''))
-    +'</table>';
-    div.innerHTML=table;
-    
-    return div
-    }
-    ,{"className": "foliumtooltip", "sticky": true});
-
+    // Add circle marker and bind tooltip with stop name for each entry of the bus stops data
     busStopsData.forEach(function (b) {
         var circleMarker = L.circleMarker(
-            [b.lat, b.lon], {
+            [b.lat, b.lon],
+            {
                 "bubblingMouseEvents": true,
                 "color": "green",
                 "dashArray": null,
