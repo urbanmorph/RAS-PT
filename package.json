@@ -1,0 +1,23 @@
+{
+  "name": "ras-pt",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "vite"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/urbanmorph/RAS-PT.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/urbanmorph/RAS-PT/issues"
+  },
+  "homepage": "https://github.com/urbanmorph/RAS-PT#readme",
+  "devDependencies": {
+    "vite": "^2.9.12"
+  }
+}
