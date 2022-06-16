@@ -30,7 +30,7 @@ for i in range(len(df)):
     fill_color='#3186cc'
 ).add_to(m)
 
-m.save('/Users/sathya/Documents/GitHub/RAS-PT/bus_stops/bus_stops.html')
+m.save('bus_stops.html')
 
 
 
