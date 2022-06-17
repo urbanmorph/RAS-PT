@@ -46,8 +46,7 @@
   <div class="folium-map" id="map"></div>
 </body>
 <script type="module">
-  import wardsData from "./bengaluru-wards-joined.json";
-  import busStopsData from "./bus-stops-data.json";
+  import busRoutesData from "./routes.2018.json";
 
   // Create instance of leaflet map
   var mapInstance = L.map("map", {
@@ -75,50 +74,10 @@
     }
   ).addTo(mapInstance);
 
-  // Add ward shapes to the map from geojson
+  // Add bus routes GeoJSON data
   var wardsGeoJson = L.geoJson(null, {
-    style: { color: "gray", fillOpacity: 0.2, weight: 1 },
-  });
-
-  function addDataToWardsGeoJson(data) {
-    wardsGeoJson.addData(data).addTo(mapInstance);
-  }
-  addDataToWardsGeoJson(wardsData);
-
-  // Add tooltip to each ward
-  wardsGeoJson.bindTooltip(
-    function (layer) {
-      return `<table>
-                <tr><th>Ward number</th><td>${layer.feature.properties.Ward_Number}</td></tr>
-                <tr><th>Ward name</th><td>${layer.feature.properties.Ward_Name}</td></tr>
-            </table>`;
-    },
-    { className: "foliumtooltip", sticky: true }
-  );
-
-  // Add circle marker and bind tooltip with stop name for each entry of the bus stops data
-  busStopsData.forEach(function (b) {
-    var circleMarker = L.circleMarker([b.lat, b.lon], {
-      bubblingMouseEvents: true,
-      color: "green",
-      dashArray: null,
-      dashOffset: null,
-      fill: true,
-      fillColor: "#3186cc",
-      fillOpacity: 0.2,
-      fillRule: "evenodd",
-      lineCap: "round",
-      lineJoin: "round",
-      opacity: 1.0,
-      radius: 5,
-      stroke: true,
-      weight: 3,
-    }).addTo(mapInstance);
-    circleMarker.bindTooltip(
-      `<div>
-                 ${b.stop_name}
-             </div>`,
-      { sticky: true }
-    );
-  });
+    style: { color: "green", fillOpacity: 0.2, weight: 1 },
+  })
+    .addData(busRoutesData)
+    .addTo(mapInstance);
 </script>

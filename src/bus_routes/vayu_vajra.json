@@ -1,0 +1,32 @@
+[
+  {
+    "id": "KIA-4",
+    "routes": [
+      {
+        "id": "forward",
+        "route": [
+          { "type": "stop", "id": "1" },
+          { "type": "point", "location": [] }
+        ],
+        "time": {
+          "default": [[345, 450, 560]],
+          "saturday": {
+            "type": "replace",
+            "value": []
+          },
+          "sunday": {
+            "type": "add",
+            "value": []
+          }
+        }
+      },
+      {
+        "id": "backward",
+        "route": [
+          { "type": "stop", "id": "1" },
+          { "type": "point", "location": [] }
+        ]
+      }
+    ]
+  }
+]

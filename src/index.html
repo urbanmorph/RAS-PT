@@ -1,83 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>RAS-PT</title>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-        <link href="./css/styles.css" rel="stylesheet" />
-    </head>
-    <body>
-        <!-- Responsive navbar-->
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="container px-5">
-                <a class="navbar-brand" href="#!">RAS-PT</a>
+  <head>
+    <title>RAS-PT</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+      integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link href="./css/styles.css" rel="stylesheet" />
+  </head>
+  <body>
+    <!-- Responsive navbar-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container px-5">
+        <a class="navbar-brand" href="#!">RAS-PT</a>
+      </div>
+    </nav>
+    <!-- Header-->
+    <header class="bg-dark py-5">
+      <div class="container px-5">
+        <div class="row gx-5 justify-content-center">
+          <div class="col-lg-8">
+            <div class="text-center my-5">
+              <h1 class="display-5 fw-bolder text-white mb-2">
+                Reliable, Accessible and Safe - Public Transport
+              </h1>
+              <ul class="list-group my-3">
+                <li class="list-group-item bg-dark text-muted border-0">
+                  Reliability will deal with information around routes,
+                  optimisation ,schedules, frequency, where’s-my-bus etc.
+                </li>
+                <li class="list-group-item bg-dark text-muted border-0">
+                  Accessibility will deal with information around coverage,
+                  reach, last mile, multimodal integration etc
+                </li>
+                <li class="list-group-item bg-dark text-muted border-0">
+                  Safety will deal with information of accidents, women and
+                  child safety inside and outside the PT mode etc.
+                </li>
+              </ul>
+              <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                <a
+                  class="btn btn-outline-light btn-lg px-4"
+                  href="https://discord.gg/mtkRx8xS"
+                  target="_blank"
+                  >Join Discord</a
+                >
+                <a
+                  class="btn btn-outline-light btn-lg px-4"
+                  href="https://github.com/urbanmorph/RAS-PT"
+                  target="_blank"
+                  >View Github</a
+                >
+              </div>
             </div>
-        </nav>
-        <!-- Header-->
-        <header class="bg-dark py-5">
-            <div class="container px-5">
-                <div class="row gx-5 justify-content-center">
-                    <div class="col-lg-8">
-                        <div class="text-center my-5">
-                            <h1 class="display-5 fw-bolder text-white mb-2">Reliable, Accessible and Safe - Public Transport</h1>
-                                <ul class="list-group my-3">
-                                    <li class="list-group-item bg-dark text-muted border-0">Reliability will deal with information around routes, optimisation ,schedules, frequency, where’s-my-bus etc.</li>
-                                    <li class="list-group-item bg-dark text-muted border-0">Accessibility will deal with information around coverage, reach, last mile, multimodal integration etc</li>
-                                    <li class="list-group-item bg-dark text-muted border-0">Safety will deal with information of accidents, women and child safety inside and outside the PT mode etc.</li>
-                                </ul>
-                            <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
-                                <a class="btn btn-outline-light btn-lg px-4" href="https://discord.gg/mtkRx8xS" target="_blank">Join Discord</a>
-                                <a class="btn btn-outline-light btn-lg px-4" href="https://github.com/urbanmorph/RAS-PT" target="_blank">View Github</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <!-- Features section-->
+    <section class="py-5 border-bottom" id="features">
+      <div class="container px-5 my-5">
+        <div class="row gx-5">
+          <div class="col-lg-4 mb-5 mb-lg-0">
+            <div
+              class="feature bg-primary bg-gradient text-white rounded-3 mb-3"
+            >
+              <i class="fa-solid fa-bus"></i>
             </div>
-        </header>
-        <!-- Features section-->
-        <section class="py-5 border-bottom" id="features">
-            <div class="container px-5 my-5">
-                <div class="row gx-5">
-                    <div class="col-lg-4 mb-5 mb-lg-0">
-                        <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="fa-solid fa-bus"></i></div>
-                        <h2 class="h4 fw-bolder">Bus Stops</h2>
-                        <p>Visualising bus stops from 2016 data available at <a class="text-decoration-none" href="https://data.opencity.in/dataset/bengaluru-public-transport-infrastructure/resource/bmtc-bus-stops-2016" target="_blank">opencity.in</a></p>
-                        <a class="text-decoration-none" href="bus_stops/" target="_blank">
-                            Visualise
-                            <i class="bi bi-arrow-right"></i>
-                        </a>
-                    </div>
-                    <div class="col-lg-4 mb-5 mb-lg-0">
-                        <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="fa-solid fa-clock"></i></div>
-                        <h2 class="h4 fw-bolder">Bus schedules</h2>
-                        <p>Visualising bus routes from BMTC published static schedules</p>
-                        <a class="text-decoration-none" href="#">
-                            Coming soon
-                            <i class="bi bi-arrow-right"></i>
-                        </a>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="fa-solid fa-train"></i></div>
-                        <h2 class="h4 fw-bolder">Railway crossings</h2>
-                        <p>Showing train arrival timings at specific railway crossings using Indian Railway API's</p>
-                        <a class="text-decoration-none" href="#">
-                            Coming soon
-                            <i class="bi bi-arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
+            <h2 class="h4 fw-bolder">Bus Stops</h2>
+            <p>
+              Visualising bus stops from 2016 data available at
+              <a
+                class="text-decoration-none"
+                href="https://data.opencity.in/dataset/bengaluru-public-transport-infrastructure/resource/bmtc-bus-stops-2016"
+                target="_blank"
+                >opencity.in</a
+              >
+            </p>
+            <a class="text-decoration-none" href="bus_stops/" target="_blank">
+              Visualise
+              <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+          <div class="col-lg-4 mb-5 mb-lg-0">
+            <div
+              class="feature bg-primary bg-gradient text-white rounded-3 mb-3"
+            >
+              <i class="fa-solid fa-clock"></i>
             </div>
-        </section>
+            <h2 class="h4 fw-bolder">Bus schedules</h2>
+            <p>Visualising bus routes from BMTC published static schedules</p>
+            <a class="text-decoration-none" href="#">
+              Coming soon
+              <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+          <div class="col-lg-4">
+            <div
+              class="feature bg-primary bg-gradient text-white rounded-3 mb-3"
+            >
+              <i class="fa-solid fa-train"></i>
+            </div>
+            <h2 class="h4 fw-bolder">Railway crossings</h2>
+            <p>
+              Showing train arrival timings at specific railway crossings using
+              Indian Railway API's
+            </p>
+            <a class="text-decoration-none" href="#">
+              Coming soon
+              <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        <!-- Footer-->
-        <footer class="py-5 bg-dark">
-            <div class="container px-5"><p class="m-0 text-center text-white">
-                <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a class="text-decoration-none text-white" rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</p>
-            </div>
-        </footer>
-    </body>
+    <!-- Footer-->
+    <footer class="py-5 bg-dark">
+      <div class="container px-5">
+        <p class="m-0 text-center text-white">
+          <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"
+            ><img
+              alt="Creative Commons License"
+              style="border-width: 0"
+              src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a
+          ><br />This work is licensed under a
+          <a
+            class="text-decoration-none text-white"
+            rel="license"
+            href="http://creativecommons.org/licenses/by/4.0/"
+            >Creative Commons Attribution 4.0 International License</a
+          >.
+        </p>
+      </div>
+    </footer>
+  </body>
 </html>

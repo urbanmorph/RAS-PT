@@ -6,7 +6,9 @@
   "scripts": {
     "start": "vite src --mode development --host 0.0.0.0",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "publish": "gh-pages -d dist",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -19,6 +21,13 @@
   },
   "homepage": "https://github.com/urbanmorph/RAS-PT#readme",
   "devDependencies": {
+    "gh-pages": "^4.0.0",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.2",
+    "prettier": "2.7.1",
     "vite": "^2.9.12"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
   }
 }
