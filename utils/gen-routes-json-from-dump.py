@@ -1,4 +1,4 @@
-# A script to convert scrape dump from myBMTC API to JSON
+# A script to convert scrape dump from myBMTC API to JSON. Filter by route name with the route_filter variable.
 # Scrape dump example:
 #
 #KIAS-4
@@ -8,32 +8,36 @@
 
 import json
 
+ROUTE_FILTER = "KIAS-"
+
 routes = []
 
-with open('finalstopscombined') as route_dump:
+with open('bmtc-api-2018-routes.txt') as route_dump:
     for route_name in route_dump:
-        route_dump_json = next(route_dump)
-        try:
-            route = json.loads(route_dump_json)
-        except json.decoder.JSONDecodeError:
-            continue
+        if ROUTE_FILTER in route_name:
+            route_dump_json = next(route_dump).strip('\n')
+            try:
+                route = json.loads(route_dump_json)
+            except json.decoder.JSONDecodeError:
+                continue
 
-        route_json_element = {}
-        route_json_element['id'] = route_name.strip()
+            route_json_element = {}
+            route_json_element['id'] = route_name.strip()
 
-        route_path = []
+            route_path = []
 
-        for stop in route:
-            stop_name = {"type": "stop", "name": stop['busStopName']}
-            stop_location = {"type": "point", "location": [stop['lat'], stop['lng']]}
-            route_path.append(stop_name)
-            route_path.append(stop_location)
+            for stop in route:
+                stop_name = {"type": "stop", "name": stop['busStopName']}
+                stop_location = {"type": "point", "location": [stop['lat'], stop['lng']]}
+                route_path.append(stop_name)
+                route_path.append(stop_location)
 
-        route_json_element['routes'] = []
-        route_json_element['routes'].append({"id": "forward", "route": route_path, "time": {}})
+            route_json_element['routes'] = []
+            route_json_element['routes'].append({"id": "forward", "route": route_path, "time": {}})
 
-        routes.append(route_json_element)
+            routes.append(route_json_element)
+        else:
+            next(route_dump)
 
-
-with open('routes.myBMTCapp.2018.json', 'w') as routes_json:
+with open('routes.KIAS.2018.json', 'w') as routes_json:
     json.dump(routes, routes_json)
