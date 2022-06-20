@@ -46,7 +46,7 @@
   <div class="folium-map" id="map"></div>
 </body>
 <script type="module">
-  import busRoutesData from "./routes.2018.json";
+  import busRoutesData from "./routes.KIAS.2018.json";
 
   // Create instance of leaflet map
   var mapInstance = L.map("map", {
@@ -75,9 +75,45 @@
   ).addTo(mapInstance);
 
   // Add bus routes GeoJSON data
-  var wardsGeoJson = L.geoJson(null, {
-    style: { color: "green", fillOpacity: 0.2, weight: 1 },
-  })
-    .addData(busRoutesData)
-    .addTo(mapInstance);
+
+  busRoutesData.forEach(function (routes) {
+
+    var route = routes['routes'][0]['route'];
+    var stop = 'Unknown';
+    var path = [];
+  
+    // Add circle marker and bind tooltip with stop name for each entry of the bus stops data
+    route.forEach(function (b) {
+      if(b.type == 'point') {
+        var circleMarker = L.circleMarker([b.location[0], b.location[1]], {
+          bubblingMouseEvents: true,
+          color: "green",
+          dashArray: null,
+          dashOffset: null,
+          fill: true,
+          fillColor: "#3186cc",
+          fillOpacity: 0.2,
+          fillRule: "evenodd",
+          lineCap: "round",
+          lineJoin: "round",
+          opacity: 1.0,
+          radius: 5,
+          stroke: true,
+          weight: 3,
+        }).addTo(mapInstance);
+      circleMarker.bindTooltip(
+        `<div>
+                   ${stop}
+               </div>`,
+        { sticky: true }
+      );
+      path.push([b.location[0], b.location[1]])
+      } else {
+        stop = b.name
+      }
+    });
+  
+    var pathLine = L.polyline(path).addTo(mapInstance)
+  });
+
 </script>

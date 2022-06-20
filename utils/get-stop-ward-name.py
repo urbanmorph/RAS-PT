@@ -8,7 +8,7 @@ with open('bengaluru-wards-joined.json') as wards_json:
     wards = json.load(wards_json)
 
 # load bus stop json
-with open('bus-stops.json') as  stops_json:
+with open('bmtc-api-2018-stops.json') as  stops_json:
     stops = json.load(stops_json)
 
 stops_with_wards = []
@@ -31,5 +31,5 @@ for stop in stops:
     stops_with_wards.append(stop)
 
 # dump the bus stop json with ward attributes
-with open('bus-stops-with-wards.json', 'w') as stops_json:
+with open('bmtc-api-2018-stops-with-wards.json', 'w') as stops_json:
     json.dump(stops_with_wards, stops_json)
