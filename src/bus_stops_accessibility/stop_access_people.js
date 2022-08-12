@@ -1,8 +1,8 @@
 function replacer(key,value)
 {
-    if (key=="intersect_polygon") return undefined;
-    else if (key=="ACCESS_POLY") return undefined;
-    else if (key=="NO_ACCESS_POLY") return undefined;
+    if (key=="intersect_poly") return undefined;
+    else if (key=="access_poly") return undefined;
+    else if (key=="no_access_poly") return undefined;
     else return value;
 }
 
@@ -21,7 +21,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 $.getJSON('./data/ac-152-accessibility-gaps-2016.geojson', function(geojson) {
     L.choropleth(geojson, {
-        valueProperty: 'ACCESS',
+        valueProperty: 'access_percentage',
         scale: ['red', 'green'],
         steps: 4,
         mode: 'k',
@@ -39,8 +39,8 @@ $.getJSON('./data/ac-152-accessibility-gaps-2016.geojson', function(geojson) {
 
             // Mouseover handler
             layer.on('mouseover', function() {
-                non_intersection_polygons_2016 = L.polygon(feature.properties.NO_ACCESS_POLY.coordinates, {color: 'red', interactive: false}).addTo(stop_access_people_2016);
-                intersection_polygons_2016 = L.polygon(feature.properties.ACCESS_POLY.coordinates, {color: 'blue', interactive: false}).addTo(stop_access_people_2016);
+                non_intersection_polygons_2016 = L.polygon(feature.properties.no_access_poly.coordinates, {color: 'red', interactive: false}).addTo(stop_access_people_2016);
+                intersection_polygons_2016 = L.polygon(feature.properties.access_poly.coordinates, {color: 'blue', interactive: false}).addTo(stop_access_people_2016);
             });
 
             // Mouseout handler
@@ -83,7 +83,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 $.getJSON('./data/ac-152-accessibility-gaps-2018.geojson', function(geojson) {
     L.choropleth(geojson, {
-        valueProperty: 'ACCESS',
+        valueProperty: 'access_percentage',
         scale: ['red', 'green'],
         steps: 4,
         mode: 'k',
@@ -101,8 +101,8 @@ $.getJSON('./data/ac-152-accessibility-gaps-2018.geojson', function(geojson) {
 
             // Mouseover handler
             layer.on('mouseover', function() {
-                non_intersection_polygons_2018 = L.polygon(feature.properties.NO_ACCESS_POLY.coordinates, {color: 'red', interactive: false}).addTo(stop_access_people_2018);
-                intersection_polygons_2018 = L.polygon(feature.properties.ACCESS_POLY.coordinates, {color: 'blue', interactive: false}).addTo(stop_access_people_2018);
+                non_intersection_polygons_2018 = L.polygon(feature.properties.no_access_poly.coordinates, {color: 'red', interactive: false}).addTo(stop_access_people_2018);
+                intersection_polygons_2018 = L.polygon(feature.properties.access_poly.coordinates, {color: 'blue', interactive: false}).addTo(stop_access_people_2018);
             });
 
             // Mouseout handler
