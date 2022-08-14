@@ -97,7 +97,7 @@ $.getJSON(ac152AccessibilityGaps2018, function (geojson) {
 
       layer.on("click", function () {
         try {
-          stops = feature.properties.stops;
+          var stops = feature.properties.stops;
           var labels = stops.map((stop) => stop.stop);
           var data = stops.map((stop) => stop.percent_of_area);
           var colors = stops.map((stop) => perc2color(stop.percent_of_area));
