@@ -14,6 +14,10 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, "src/index.html"),
         bus_stops: resolve(__dirname, "src/bus_stops/index.html"),
+        bus_stops_accessibility: resolve(
+          __dirname,
+          "src/bus_stops_accessibility/index.html"
+        ),
       },
     },
   },
