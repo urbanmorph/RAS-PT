@@ -152,14 +152,14 @@ $.getJSON(stopAccessibility2018, function (geojson) {
           feature.properties.access_poly.coordinates,
           { color: "blue", interactive: false }
         ).addTo(map);
+        if (popupLayer !== undefined) {
+          popupLayer.closePopup();
+        }
       });
 
       layer.on("mouseout", function () {
         non_intersection_polygons_2018.remove();
         intersection_polygons_2018.remove();
-        if (popupLayer !== undefined) {
-          popupLayer.closePopup();
-        }
       });
     },
   }).addTo(map);
