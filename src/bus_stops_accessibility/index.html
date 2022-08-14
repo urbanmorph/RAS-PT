@@ -39,7 +39,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
-    <script src="choropleth.js"></script>
     <link rel="stylesheet" href="./pandoc.css" />
     <link
       rel="stylesheet"
@@ -53,6 +52,11 @@
     <h3 id="stpo-access-people-2018">BMTC Stop Accessibility.</h3>
     <a href="./ac-152-accessibility-gaps-2018.geojson">View raw data</a>
     <div id="stop_access_people_2018" style="height: 90%"></div>
-    <script src="stop_access_people.js"></script>
+    <script type="module">
+      import "./choropleth.js";
+      import "./stop_access_people.js";
+    </script>
+    <!--    <script src="./choropleth.js"></script>-->
+    <!--    <script src="./stop_access_people.js"></script>-->
   </body>
 </html>
