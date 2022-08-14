@@ -1,5 +1,5 @@
 import busStops2018 from "./data/bus-stops-2018.json?url";
-import ac152AccessibilityGaps2018 from "./data/ac-152-accessibility-gaps-2018.geojson?url";
+import stopAccessibility2018 from "./data/stop-accessbility-2018.geojson?url";
 
 function replacer(key, value) {
   if (key == "intersect_poly") return undefined;
@@ -18,48 +18,61 @@ function perc2color(perc) {
   return "#" + ("000000" + h.toString(16)).slice(-6);
 }
 
-var stop_access_people_2018 = L.map("stop_access_people_2018").setView(
-  [13.13, 77.63],
-  12
+var map = L.map("map").setView(
+  [12.965, 77.60],
+  11
 );
 var intersection_polygons_2018;
 var non_intersection_polygons_2018;
 var chart;
+var markers = [];
 var popupLayer;
+var busStops;
 
 // Add basemap
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 19,
   minZoom: 9,
   attribution:
-    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetmap</a> contributors. <a href="https://www.openstreetmap.org/fixthemap">Edit the map</a>',
+  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetmap</a> contributors. <a href="https://www.openstreetmap.org/fixthemap">Edit the map</a>',
   opacity: 0.5,
   maxBoundsViscosity: 0.9,
-}).addTo(stop_access_people_2018);
+}).addTo(map);
 
 $.getJSON(busStops2018, function (busStopsData) {
   // Add circle marker and bind tooltip with stop name for each entry of the bus stops data
-  busStopsData.forEach(function (b) {
-    var circle = L.circle([b.lat, b.lon], {
-      bubblingMouseEvents: true,
-      color: "black",
-      dashArray: null,
-      dashOffset: null,
-      fill: true,
-      fillColor: "#000000",
-      radius: 1,
-      stroke: true,
-    }).addTo(stop_access_people_2018);
-    circle.bindTooltip(
-      `<div>
-                 ${b.stop_name}
-             </div>`,
-      { sticky: true }
-    );
-  });
+  busStops = busStopsData;
 });
 
-$.getJSON(ac152AccessibilityGaps2018, function (geojson) {
+map.on('zoomend', function() {
+  if (map.getZoom() > 14) {
+    busStops.forEach(function (b) {
+      var circle = L.circle([b.lat, b.lon], {
+        bubblingMouseEvents: true,
+        color: "black",
+        dashArray: null,
+        dashOffset: null,
+        fill: true,
+        fillColor: "#000000",
+        radius: 1,
+        stroke: true,
+      }).addTo(map);
+      circle.bindTooltip(
+        `<div>
+                   ${b.stop_name}
+               </div>`,
+        { sticky: true }
+      );
+      markers.push(circle);
+    });
+  } else {
+    markers.forEach(function(l) {
+      map.removeLayer(l);
+    })
+  }
+});
+
+$.getJSON(stopAccessibility2018, function (geojson) {
   L.choropleth(geojson, {
     valueProperty: "access_percentage",
     scale: ["red", "green"],
@@ -72,30 +85,11 @@ $.getJSON(ac152AccessibilityGaps2018, function (geojson) {
     },
     onEachFeature: function (feature, layer) {
       var pieChart =
-        "<div class='canvas-div'><canvas id=\"canvas\"></canvas></div>";
-      layer.bindPopup(pieChart);
-      ////layer.bindTooltip('Properties: <br><pre>' + JSON.stringify(feature.properties, replacer, 4), {
+        "<h3>" + feature.properties.PS_Name + "</h3><div class='canvas-div'><canvas id=\"canvas\"></canvas></div>";
 
-      layer.on("mouseover", function () {
-        non_intersection_polygons_2018 = L.polygon(
-          feature.properties.no_access_poly.coordinates,
-          { color: "red", interactive: false }
-        ).addTo(stop_access_people_2018);
-        intersection_polygons_2018 = L.polygon(
-          feature.properties.access_poly.coordinates,
-          { color: "blue", interactive: false }
-        ).addTo(stop_access_people_2018);
-        if (popupLayer !== undefined) {
-          popupLayer.closePopup();
-        }
-      });
+      layer.bindPopup(pieChart).on("popupopen", () => {
+        popupLayer = layer;
 
-      layer.on("mouseout", function () {
-        non_intersection_polygons_2018.remove();
-        intersection_polygons_2018.remove();
-      });
-
-      layer.on("click", function () {
         try {
           var stops = feature.properties.stops;
           var labels = stops.map((stop) => stop.stop);
@@ -107,6 +101,7 @@ $.getJSON(ac152AccessibilityGaps2018, function (geojson) {
           var data = [];
           var colors = [];
         }
+
         labels.push("No Stop");
         data.push(feature.properties.no_access_percentage);
         colors.push("rgba(255, 0, 0, 0.8)");
@@ -129,12 +124,15 @@ $.getJSON(ac152AccessibilityGaps2018, function (geojson) {
             reponsive: true,
           },
         };
+
         chart = new Chart(ctx, config);
+
         var element = document.getElementsByClassName("canvas-div")[0];
         var height = "height:" + (300 + 25 * (stops.length - 5)) + "px;";
         element.setAttribute("style", height);
         var width = "width:" + (300 + 25 * (stops.length - 5)) + "px;";
         element.setAttribute("style", width);
+
         var element = document.getElementsByClassName(
           "leaflet-popup-content"
         )[0];
@@ -142,8 +140,27 @@ $.getJSON(ac152AccessibilityGaps2018, function (geojson) {
         element.setAttribute("style", height);
         var width = "width:" + (300 + 25 * (stops.length - 5)) + "px;";
         element.setAttribute("style", width);
-        popupLayer = layer;
+      });
+      ////layer.bindTooltip('Properties: <br><pre>' + JSON.stringify(feature.properties, replacer, 4), {
+
+      layer.on("mouseover", function () {
+        non_intersection_polygons_2018 = L.polygon(
+          feature.properties.no_access_poly.coordinates,
+          { color: "red", interactive: false }
+        ).addTo(map);
+        intersection_polygons_2018 = L.polygon(
+          feature.properties.access_poly.coordinates,
+          { color: "blue", interactive: false }
+        ).addTo(map);
+      });
+
+      layer.on("mouseout", function () {
+        non_intersection_polygons_2018.remove();
+        intersection_polygons_2018.remove();
+        if (popupLayer !== undefined) {
+          popupLayer.closePopup();
+        }
       });
     },
-  }).addTo(stop_access_people_2018);
+  }).addTo(map);
 });

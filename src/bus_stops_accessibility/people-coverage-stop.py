@@ -6,7 +6,7 @@ from functools import partial
 from shapely.geometry import shape, Point, Polygon, mapping
 from shapely.ops import transform, unary_union
 
-AC_NAME = "Byataryanapura"
+AC_NAME = "Yeshwantpura"
 
 # From: https://gis.stackexchange.com/questions/268250/generating-polygon-representing-rough-100km-circle-around-latitude-longitude-poi
 def buffer_in_meters(lng, lat, radius):
@@ -73,7 +73,13 @@ def update_booth_properties(booth):
         booth['properties']['access_percentage'] = float("{:.2f}".format((intersect_percentage) * 100))
         booth['properties']['no_access_percentage'] = float("{:.2f}".format((1 - intersect_percentage) * 100))
         booth['properties']['access_poly'] = mapping(intersect_poly)
-        booth['properties']['no_access_poly'] = mapping(booth_poly.difference(intersect_poly))
+        try:
+            booth['properties']['no_access_poly'] = mapping(booth_poly.difference(intersect_poly))
+        except:
+            print('Geometry has self-intersection for ' + booth['properties']['PS_Name'] + ', trying to fix...')
+            print(booth_poly)
+            print(intersect_poly)
+            booth['properties']['no_access_poly'] = mapping(booth_poly.difference(intersect_poly[0]).buffer(0))
     else:
         booth['properties']['access_percentage'] = 0
         booth['properties']['no_access_percentage'] = 100
@@ -121,7 +127,7 @@ def get_booths_intersections(booths, stops):
 
 with open('data/bus-stops-2018.json') as stops_json:
     stops = json.load(stops_json)
-with open('data/ac-152-demographics-and-stops.json') as booths_json:
+with open('data/ac-163-demographics-and-stops.json') as booths_json:
     booths = json.load(booths_json)
 
 # Combined polygon of all booths for initial check
@@ -138,5 +144,5 @@ for idx, booth in enumerate(booths["features"]):
 
 booths["name"] = AC_NAME
 
-with open('data/ac-152-accessibility-gaps-2018.geojson', 'w') as ac_json:
+with open('data/ac-163-accessibility-gaps-2018.geojson', 'w') as ac_json:
     json.dump(booths, ac_json)
