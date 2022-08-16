@@ -6,7 +6,7 @@ from functools import partial
 from shapely.geometry import shape, Point, Polygon, mapping
 from shapely.ops import transform, unary_union
 
-AC_NAME = "Yeshwantpura"
+AC_NAME = "Byatarayanapura"
 
 # From: https://gis.stackexchange.com/questions/268250/generating-polygon-representing-rough-100km-circle-around-latitude-longitude-poi
 def buffer_in_meters(lng, lat, radius):
@@ -32,6 +32,7 @@ def buffer_in_meters(lng, lat, radius):
     buffer_wgs84 = transform(aeqd_to_wgs84, buffer)
     return buffer_wgs84
 
+# Update details of stops near a booth
 def update_booth_with_stop(booth, booth_poly, stop, intersect_poly):
     booth_polygon = shape(booth['geometry'])
     intersect_poly = (transform(lambda x, y: (y, x), intersect_poly))
@@ -98,7 +99,7 @@ def update_booths_near_stop(booths, stop, circle):
     return booths
 
 # Find stops within 500m of the combined booth polygon
-def stops_near_ac(booths, stops):
+def stops_near_ac(booths, stops, ac_poly):
     num_stops = len(stops)
     stops_to_process = []
     for idx, stop in enumerate(stops):
@@ -118,31 +119,37 @@ def get_booths_intersections(booths, stops):
         x = float(stop["lat"])
         y = float(stop["lon"])
         circle = buffer_in_meters(y, x, 500)
-        #if 'Manyatha' not in stop_name:
-        #    continue
-        #if idx > 100:
-        #    break
         booths = update_booths_near_stop(booths, stop, circle)
     return booths
 
+# Run the flow for a particular Assembly Constituency
+def parse_ac(stops, ac_no):
+    with open('data/ac-' + str(ac_no) + '-demographics-and-stops.json') as booths_json:
+        booths = json.load(booths_json)
+
+    # Combined polygon of all booths for initial check
+    ac_poly = Polygon()
+    for booth in booths["features"]:
+        ac_poly = [ac_poly, shape(booth['geometry'])]
+        ac_poly = unary_union(ac_poly)
+
+    stops_to_process = stops_near_ac(booths, stops, ac_poly)
+    booths = get_booths_intersections(booths, stops_to_process)
+
+    for idx, booth in enumerate(booths["features"]):
+        booths["features"][idx] = update_booth_properties(booth)
+
+    booths["name"] = AC_NAME
+
+    with open('data/ac' + str(ac_no) + '.geojson', 'w') as ac_geojson:
+        json.dump(booths, ac_geojson)
+
+    with open('data/ac' + str(ac_no) + '.json', 'w') as ac_json:
+        json.dump(stops_to_process, ac_json)
+
+
 with open('data/bus-stops-2018.json') as stops_json:
     stops = json.load(stops_json)
-with open('data/ac-163-demographics-and-stops.json') as booths_json:
-    booths = json.load(booths_json)
-
-# Combined polygon of all booths for initial check
-ac_poly = Polygon()
-for booth in booths["features"]:
-    ac_poly = [ac_poly, shape(booth['geometry'])]
-    ac_poly = unary_union(ac_poly)
-
-#stops_to_process = stops_near_ac(booths, stops)
-booths = get_booths_intersections(booths, stops)
-
-for idx, booth in enumerate(booths["features"]):
-    booths["features"][idx] = update_booth_properties(booth)
-
-booths["name"] = AC_NAME
-
-with open('data/ac-163-accessibility-gaps-2018.geojson', 'w') as ac_json:
-    json.dump(booths, ac_json)
+#parse_ac(stops, '152')
+parse_ac(stops, '153')
+parse_ac(stops, '163')
