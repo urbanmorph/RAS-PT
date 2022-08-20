@@ -6,7 +6,7 @@ from functools import partial
 from shapely.geometry import shape, Point, Polygon, mapping
 from shapely.ops import transform, unary_union
 
-AC_NAME = "Byatarayanapura"
+AC_NAME = "Mahadevapura"
 
 # From: https://gis.stackexchange.com/questions/268250/generating-polygon-representing-rough-100km-circle-around-latitude-longitude-poi
 def buffer_in_meters(lng, lat, radius):
@@ -151,5 +151,6 @@ def parse_ac(stops, ac_no):
 with open('data/bus-stops-2018.json') as stops_json:
     stops = json.load(stops_json)
 #parse_ac(stops, '152')
-parse_ac(stops, '153')
-parse_ac(stops, '163')
+#parse_ac(stops, '153')
+#parse_ac(stops, '163')
+parse_ac(stops, '174')
