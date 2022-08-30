@@ -5,6 +5,7 @@ import json
 from functools import partial
 from shapely.geometry import shape, Point, Polygon, mapping
 from shapely.ops import transform, unary_union
+from shapely.validation import make_valid
 
 AC_NAME = "Mahadevapura"
 
@@ -80,7 +81,11 @@ def update_booth_properties(booth):
             print('Geometry has self-intersection for ' + booth['properties']['PS_Name'] + ', trying to fix...')
             print(booth_poly)
             print(intersect_poly)
-            booth['properties']['no_access_poly'] = mapping(booth_poly.difference(intersect_poly[0]).buffer(0))
+            booth_poly = make_valid(booth_poly)
+            intersect_poly = make_valid(intersect_poly)
+            print(booth_poly)
+            print(intersect_poly)
+            booth['properties']['no_access_poly'] = mapping(booth_poly.difference(intersect_poly))
     else:
         booth['properties']['access_percentage'] = 0
         booth['properties']['no_access_percentage'] = 100
@@ -150,7 +155,6 @@ def parse_ac(stops, ac_no):
 
 with open('data/bus-stops-2018.json') as stops_json:
     stops = json.load(stops_json)
-#parse_ac(stops, '152')
-#parse_ac(stops, '153')
-#parse_ac(stops, '163')
-parse_ac(stops, '174')
+parse_ac(stops, '159')
+parse_ac(stops, '165')
+#parse_ac(stops, '174')
