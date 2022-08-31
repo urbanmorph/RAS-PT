@@ -51,9 +51,9 @@ def update_booth_with_stop(booth, booth_poly, stop, intersect_poly):
     stop_near_booth['stop'] = stop['stop_name']
     stop_near_booth['intersect_area'] = intersect_area.area
     stop_near_booth['percent_of_area'] = intersect_poly.area / booth_polygon.area
-    stop_near_booth['people'] = float("{:.2f}".format(stop_near_booth['percent_of_area'] * booth['properties']['PEOPLE']))
-    stop_near_booth['senior_people'] = float("{:.2f}".format(stop_near_booth['percent_of_area'] * booth['properties']['SENIOR_PEOPLE']))
-    stop_near_booth['women'] = float("{:.2f}".format(stop_near_booth['percent_of_area'] * booth['properties']['WOMEN']))
+    stop_near_booth['people'] = float("{:.2f}".format(stop_near_booth['percent_of_area'] * booth['properties']['people']))
+    stop_near_booth['senior_people'] = float("{:.2f}".format(stop_near_booth['percent_of_area'] * booth['properties']['seniors']))
+    stop_near_booth['women'] = float("{:.2f}".format(stop_near_booth['percent_of_area'] * booth['properties']['women']))
     stop_near_booth['percent_of_area'] = float("{:.2f}".format(stop_near_booth['percent_of_area'] * 100))
     stop_near_booth['intersect_poly'] = mapping(intersect_poly)
 
@@ -155,6 +155,5 @@ def parse_ac(stops, ac_no):
 
 with open('data/bus-stops-2018.json') as stops_json:
     stops = json.load(stops_json)
-parse_ac(stops, '159')
-parse_ac(stops, '165')
-#parse_ac(stops, '174')
+
+parse_ac(stops, '161')

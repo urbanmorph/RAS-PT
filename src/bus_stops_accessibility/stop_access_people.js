@@ -24,7 +24,7 @@ class LeafletMap {
       minZoom: 9,
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetmap</a> contributors. <a href="https://www.openstreetmap.org/fixthemap">Edit the map</a>',
-      opacity: 0.5,
+      opacity: 0.4,
       maxBoundsViscosity: 0.9,
     }).addTo(this.mapInstance);
   };
@@ -69,11 +69,27 @@ class LeafletMap {
       mode: "k",
       style: {
         color: "#fff",
-        weight: 2,
-        fillOpacity: 0.66,
+        weight: 0.5,
+        fillOpacity: 0.5,
       },
       onEachFeature: (feature, layer) => {
-        const pieChart = `<h3>${feature.properties.PS_Name}</h3>
+        const { stops = [] } = feature.properties;
+        const people = parseInt(
+          (feature.properties.access_percentage * feature.properties.people) /
+            100
+        );
+        const seniors = parseInt(
+          (feature.properties.access_percentage * feature.properties.seniors) /
+            100
+        );
+        const women = parseInt(
+          (feature.properties.access_percentage * feature.properties.women) /
+            100
+        );
+        const pieChart = `<b>${stops.length} stops</b> providing access to <b>${feature.properties.access_percentage}%</b> of the:<br>
+          <b>${people}</b> people<br>
+          <b>${seniors}</b> senior citizens.<br>
+          <b>${women}</b> women.<br>
           <div class='canvas-div'>
             <canvas id="canvas"></canvas>
           </div>
@@ -81,16 +97,12 @@ class LeafletMap {
 
         layer.bindPopup(pieChart).on("popupopen", () => {
           popupLayer = layer;
-          const { stops = [] } = feature.properties;
-          const labels = [...stops.map((stop) => stop.stop), "No Stop"];
+          const labels = ["Access", "No Access"];
           const data = [
-            ...stops.map((stop) => stop.percent_of_area),
+            feature.properties.access_percentage,
             feature.properties.no_access_percentage,
           ];
-          const colors = [
-            ...stops.map((stop) => perc2color(stop.percent_of_area)),
-            "rgba(255, 0, 0, 0.8)",
-          ];
+          const colors = ["rgba(0, 255, 0, 0.8)", "rgba(255, 0, 0, 0.8)"];
 
           new Chart(canvas.getContext("2d"), {
             type: "pie",
@@ -104,22 +116,18 @@ class LeafletMap {
                 },
               ],
             },
-            options: {
-              maintainAspectRatio: false,
-              reponsive: true,
-            },
           });
 
           const canvasElement =
             document.getElementsByClassName("canvas-div")[0];
-          canvasElement.style.height = `${300 + 25 * (stops.length - 5)}px`;
-          canvasElement.style.width = `${300 + 25 * (stops.length - 5)}px`;
+          canvasElement.style.height = "200px";
+          canvasElement.style.width = "200px";
 
           const element = document.getElementsByClassName(
             "leaflet-popup-content"
           )[0];
-          element.style.height = `${300 + 25 * (stops.length - 5)}px`;
-          element.style.width = `${300 + 25 * (stops.length - 5)}px`;
+          element.style.height = "200px";
+          element.style.width = "200px";
         });
 
         layer.on("mouseover", () => {
@@ -151,6 +159,6 @@ class LeafletMap {
 
 const leafletInstance = new LeafletMap("map", [12.965, 77.6]);
 leafletInstance.updateData([
-  `${BASE_URL}bus-stops-2018.json`,
-  `${BASE_URL}stop-accessbility-2018.geojson`,
+  `${BASE_URL}bus_stops/combined.json`,
+  `${BASE_URL}stops_accessibility/combined.geojson`,
 ]);
