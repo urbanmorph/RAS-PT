@@ -12,7 +12,7 @@ class LeafletMap {
       stops: [],
       accessibility: [],
     };
-
+    this.choroplethLayer = null;
     this.initMap(domId, center);
     this.initEvents();
   }
@@ -62,7 +62,10 @@ class LeafletMap {
 
     this.data.stops = stopsData;
 
-    L.choropleth(accessibilityData, {
+    if (this.choroplethLayer) {
+      this.mapInstance.removeLayer(this.choroplethLayer);
+    }
+    this.choroplethLayer = L.choropleth(accessibilityData, {
       valueProperty: "access_percentage",
       scale: ["red", "green"],
       steps: 4,
@@ -158,7 +161,29 @@ class LeafletMap {
 }
 
 const leafletInstance = new LeafletMap("map", [12.965, 77.6]);
-leafletInstance.updateData([
-  `${BASE_URL}bus_stops/combined.json`,
-  `${BASE_URL}stops_accessibility/combined.geojson`,
-]);
+
+const updateBooth = (boothId) => {
+  leafletInstance.updateData([
+    `${BASE_URL}bus_stops/${boothId}.json`,
+    `${BASE_URL}stops_accessibility/${boothId}.geojson`,
+  ]);
+};
+
+const boothsAvailable = [
+  "ac151",
+  "ac152",
+  "ac153",
+  "ac159",
+  "ac161",
+  "ac163",
+  "ac165",
+  "ac174",
+];
+const selectInput = document.getElementById("booth-dropdown");
+selectInput.innerHTML = boothsAvailable
+  .map((b) => `<option value="${b}">${b.toUpperCase()}</option>`)
+  .join("");
+selectInput.addEventListener("change", (e) => {
+  updateBooth(e.target.value);
+});
+updateBooth(boothsAvailable[0]);
