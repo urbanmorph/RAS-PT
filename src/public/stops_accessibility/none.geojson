@@ -1,0 +1,19 @@
+{
+  "type": "FeatureCollection",
+  "name": "None",
+  "features": [
+    {
+      "type": "Feature",
+      "id": 0,
+      "properties": {
+        "PS_Name": "None",
+        "people": 0,
+        "seniors": 0,
+        "women": 0,
+        "stops": [
+          {
+          },
+      }
+    },
+  ]
+}

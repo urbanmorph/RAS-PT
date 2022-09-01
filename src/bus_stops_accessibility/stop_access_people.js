@@ -2,7 +2,8 @@ import { BASE_URL, pageLoader, perc2color } from "../utils";
 
 let intersection_polygons_2018,
   non_intersection_polygons_2018,
-  markers = [],
+  stops = [],
+  offices = [],
   popupLayer;
 
 class LeafletMap {
@@ -11,6 +12,7 @@ class LeafletMap {
     this.data = {
       stops: [],
       accessibility: [],
+      destinations: [],
     };
     this.choroplethLayer = null;
     this.initMap(domId, center);
@@ -33,7 +35,7 @@ class LeafletMap {
     this.mapInstance.on("zoomend", () => {
       if (this.mapInstance.getZoom() > 14) {
         this.data.stops.forEach((b) => {
-          const circle = L.circle([b.lat, b.lon], {
+          const stop = L.circle([b.lat, b.lon], {
             bubblingMouseEvents: true,
             color: "black",
             fill: true,
@@ -41,16 +43,16 @@ class LeafletMap {
             radius: 1,
             stroke: true,
           }).addTo(this.mapInstance);
-          circle.bindTooltip(
+          stop.bindTooltip(
             `<div>
               ${b.stop_name}
             </div>`,
             { sticky: true }
           );
-          markers.push(circle);
+          stops.push(stop);
         });
       } else {
-        markers.forEach((l) => {
+        stops.forEach((l) => {
           this.mapInstance.removeLayer(l);
         });
       }
@@ -58,9 +60,31 @@ class LeafletMap {
   };
 
   updateData = async (files) => {
-    const [stopsData, accessibilityData] = await pageLoader(files);
+    const [stopsData, accessibilityData, destinationsData] = await pageLoader(files);
 
     this.data.stops = stopsData;
+    this.data.destinations = destinationsData;
+
+    this.data.destinations.forEach((b) => {
+      const office = L.circle([b.lat, b.lon], {
+        bubblingMouseEvents: true,
+        color: "white",
+        weight: 1.5,
+        fill: true,
+        fillOpacity: 0.8,
+        // in below, 7 is max number of stops for an office in the dataset, currently hardcoded. TODO: Dynamically calculate percentage
+        fillColor: perc2color(b.stops.length * (100 / 7)),
+        radius: 40 + Math.sqrt(b.employees),
+        stroke: true,
+      }).addTo(this.mapInstance);
+      office.bindTooltip(
+        `<div>
+          ${b.employees}
+        </div>`,
+        { sticky: true }
+      );
+      offices.push(office);
+    });
 
     if (this.choroplethLayer) {
       this.mapInstance.removeLayer(this.choroplethLayer);
@@ -162,14 +186,21 @@ class LeafletMap {
 
 const leafletInstance = new LeafletMap("map", [12.965, 77.6]);
 
-const updateBooth = (boothId) => {
+const officeIcon = L.icon({
+  iconUrl: `${BASE_URL}office.png`,
+  iconSize:     [10, 10], // size of the icon
+});
+
+const updateAssemblyConstituency = (assemblyConstituencyId) => {
   leafletInstance.updateData([
-    `${BASE_URL}bus_stops/${boothId}.json`,
-    `${BASE_URL}stops_accessibility/${boothId}.geojson`,
+    `${BASE_URL}bus_stops/${assemblyConstituencyId}.json`,
+    `${BASE_URL}stops_accessibility/${assemblyConstituencyId}.geojson`,
+    `${BASE_URL}bangalore_offices_access.json`,
   ]);
 };
 
-const boothsAvailable = [
+const assemblyConstituenciesAvailable = [
+  "none",
   "ac151",
   "ac152",
   "ac153",
@@ -179,11 +210,11 @@ const boothsAvailable = [
   "ac165",
   "ac174",
 ];
-const selectInput = document.getElementById("booth-dropdown");
-selectInput.innerHTML = boothsAvailable
+const selectInput = document.getElementById("assemblyConstituency-dropdown");
+selectInput.innerHTML = assemblyConstituenciesAvailable
   .map((b) => `<option value="${b}">${b.toUpperCase()}</option>`)
   .join("");
 selectInput.addEventListener("change", (e) => {
-  updateBooth(e.target.value);
+  updateAssemblyConstituency(e.target.value);
 });
-updateBooth(boothsAvailable[0]);
+updateAssemblyConstituency(assemblyConstituenciesAvailable[0]);
