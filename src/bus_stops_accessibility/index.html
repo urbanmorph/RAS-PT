@@ -1,62 +1,94 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="generator" content="pandoc" />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0, user-scalable=yes"
     />
-    <title>BMTC Accessibility in Byataryanapura</title>
-    <style>
-      code {
-        white-space: pre-wrap;
-      }
-      span.smallcaps {
-        font-variant: small-caps;
-      }
-      span.underline {
-        text-decoration: underline;
-      }
-      div.column {
-        display: inline-block;
-        vertical-align: top;
-        width: 50%;
-      }
-      div.hanging-indent {
-        margin-left: 1.5em;
-        text-indent: -1.5em;
-      }
-      ul.task-list {
-        list-style: none;
-      }
-      .display.math {
-        display: block;
-        text-align: center;
-        margin: 0.5rem auto;
-      }
-    </style>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <title>BMTC Stop Accessibility</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;900&display=swap"
+    />
     <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
-    <link rel="stylesheet" href="./pandoc.css" />
+    <link rel="stylesheet" href="/pandoc.css" />
     <link
       rel="stylesheet"
       href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
     />
-    <!--[if lt IE 9]>
-      <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-    <![endif]-->
+    <script src="/choropleth.js"></script>
+    <link rel="stylesheet" href="/main.css" />
+    <style>
+      code {
+        white-space: pre-wrap;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Noto Sans", sans-serif;
+      }
+      #root {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100vh;
+        overflow: auto;
+      }
+
+      #map {
+        flex-grow: 1;
+        flex-shrink: 1;
+      }
+
+      h1,
+      h2,
+      h3 {
+        font-weight: 900;
+      }
+      #top-contents {
+        padding: 20px;
+      }
+      #stop-access-2018 {
+        margin: 0;
+      }
+      #raw-data-link {
+        margin: 10px 0;
+        display: inline-block;
+      }
+      #assemblyConstituency-dropdown {
+        border: 0;
+        box-shadow: inset 0 0 1px #222222;
+        font: inherit;
+        border-radius: 4px;
+        padding: 4px 10px;
+        width: 150px;
+      }
+    </style>
   </head>
   <body>
-    <h3 id="stpo-access-people-2018">BMTC Stop Accessibility.</h3>
-    <a href="./data/ac-152-accessibility-gaps-2018.geojson">View raw data</a>
-    <div id="stop_access_people_2018" style="height: 90%"></div>
+    <div id="root">
+      <div id="top-contents">
+        <h3 id="stop-access-2018">BMTC Stop Accessibility</h3>
+        <a
+          href="https://github.com/urbanmorph/RAS-PT/tree/main/src/public"
+          target="_blank"
+          id="raw-data-link"
+          >View raw data</a
+        >
+        <div>
+          Select Assembly Constituency:
+          <select id="assemblyConstituency-dropdown"></select>
+        </div>
+      </div>
+      <div id="map"></div>
+    </div>
     <script type="module">
-      import "./choropleth.js";
       import "./stop_access_people.js";
     </script>
-    <!--    <script src="./choropleth.js"></script>-->
-    <!--    <script src="./stop_access_people.js"></script>-->
   </body>
 </html>

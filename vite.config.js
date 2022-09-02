@@ -5,7 +5,7 @@ import { resolve } from "path";
 export default defineConfig({
   plugins: [],
   root: "src",
-  base: "/RAS-PT",
+  base: "/RAS-PT/",
   build: {
     outDir: "../dist",
     emptyOutDir: true,
