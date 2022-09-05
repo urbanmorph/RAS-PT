@@ -156,4 +156,5 @@ def parse_ac(stops, ac_no):
 with open('data/bus-stops-2018.json') as stops_json:
     stops = json.load(stops_json)
 
-parse_ac(stops, '161')
+parse_ac(stops, '160')
+parse_ac(stops, '174')
