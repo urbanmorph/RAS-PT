@@ -1,7 +1,7 @@
 import { BASE_URL, pageLoader, perc2color } from "../utils";
 
-let intersection_polygons_2018,
-  non_intersection_polygons_2018,
+let intersection_polygons,
+  non_intersection_polygons,
   stops = [],
   offices = [],
   popupLayer;
@@ -14,7 +14,7 @@ class LeafletMap {
       accessibility: [],
       destinations: [],
     };
-    this.choroplethLayer = null;
+    this.chloroplethLayer = null;
     this.initMap(domId, center);
     this.initEvents();
   }
@@ -40,12 +40,12 @@ class LeafletMap {
             color: "black",
             fill: true,
             fillColor: "#000000",
-            radius: 1,
+            radius: 15,
             stroke: true,
           }).addTo(this.mapInstance);
           stop.bindTooltip(
             `<div>
-              ${b.stop_name}
+              ${b.name}
             </div>`,
             { sticky: true }
           );
@@ -65,105 +65,34 @@ class LeafletMap {
     this.data.stops = stopsData;
     this.data.destinations = destinationsData;
 
-    this.data.destinations.forEach((b) => {
-      const office = L.circle([b.lat, b.lon], {
-        bubblingMouseEvents: true,
-        color: "white",
-        weight: 1.5,
-        fill: true,
-        fillOpacity: 0.8,
-        // in below, 7 is max number of stops for an office in the dataset, currently hardcoded. TODO: Dynamically calculate percentage
-        fillColor: perc2color(b.stops.length * (100 / 7)),
-        radius: 40 + Math.sqrt(b.employees),
-        stroke: true,
-      }).addTo(this.mapInstance);
-      office.bindTooltip(
-        `<div>
-          ${b.employees}
-        </div>`,
-        { sticky: true }
-      );
-      offices.push(office);
-    });
-
-    if (this.choroplethLayer) {
-      this.mapInstance.removeLayer(this.choroplethLayer);
+    if (this.chloroplethLayer) {
+      this.mapInstance.removeLayer(this.chloroplethLayer);
     }
-    this.choroplethLayer = L.choropleth(accessibilityData, {
+    this.chloroplethLayer = L.chloropleth(accessibilityData, {
       valueProperty: "access_percentage",
       scale: ["red", "green"],
       steps: 4,
-      mode: "k",
+      mode: "e",
       style: {
         color: "#fff",
         weight: 0.5,
         fillOpacity: 0.5,
       },
       onEachFeature: (feature, layer) => {
-        const { stops = [] } = feature.properties;
-        const people = parseInt(
-          (feature.properties.access_percentage * feature.properties.people) /
-            100
-        );
-        const seniors = parseInt(
-          (feature.properties.access_percentage * feature.properties.seniors) /
-            100
-        );
-        const women = parseInt(
-          (feature.properties.access_percentage * feature.properties.women) /
-            100
-        );
-        const pieChart = `<b>${stops.length} stops</b> providing access to <b>${feature.properties.access_percentage}%</b> of the:<br>
-          <b>${people}</b> people<br>
-          <b>${seniors}</b> senior citizens.<br>
-          <b>${women}</b> women.<br>
-          <div class='canvas-div'>
-            <canvas id="canvas"></canvas>
-          </div>
-        `;
+        const { stops = [], people, employees, access_percentage, routes} = feature.properties;
+        const popupInfo = `<b>${stops.length} bus stops</b> for <b>${people + employees} people</b> in this booth.<br><b>${access_percentage}%</b> of this booth's area is within 500m of a bus stop.<br><b>${Math.floor(routes.length)} bus routes</b> pass through these ${stops.length} stops.<br>`;
 
-        layer.bindPopup(pieChart).on("popupopen", () => {
+        layer.bindPopup(popupInfo).on("popupopen", () => {
           popupLayer = layer;
-          const labels = ["Access", "No Access"];
-          const data = [
-            feature.properties.access_percentage,
-            feature.properties.no_access_percentage,
-          ];
-          const colors = ["rgba(0, 255, 0, 0.8)", "rgba(255, 0, 0, 0.8)"];
-
-          new Chart(canvas.getContext("2d"), {
-            type: "pie",
-            data: {
-              labels: labels,
-              datasets: [
-                {
-                  label: "Stops",
-                  data: data,
-                  backgroundColor: colors,
-                },
-              ],
-            },
-          });
-
-          const canvasElement =
-            document.getElementsByClassName("canvas-div")[0];
-          canvasElement.style.height = "200px";
-          canvasElement.style.width = "200px";
-
-          const element = document.getElementsByClassName(
-            "leaflet-popup-content"
-          )[0];
-          element.style.height = "200px";
-          element.style.width = "200px";
         });
 
         layer.on("mouseover", () => {
-          non_intersection_polygons_2018 = L.polygon(
+          non_intersection_polygons = L.polygon(
             feature.properties.no_access_poly.coordinates,
             { color: "red", interactive: false }
           ).addTo(this.mapInstance);
-          intersection_polygons_2018 = L.polygon(
-            feature.properties.access_poly.coordinates,
+          intersection_polygons = L.polygon(
+            feature.properties.stop_access_poly.coordinates,
             { color: "blue", interactive: false }
           ).addTo(this.mapInstance);
           if (popupLayer !== undefined) {
@@ -172,11 +101,11 @@ class LeafletMap {
         });
 
         layer.on("mouseout", function () {
-          if (non_intersection_polygons_2018) {
-            non_intersection_polygons_2018.remove();
+          if (non_intersection_polygons) {
+            non_intersection_polygons.remove();
           }
-          if (intersection_polygons_2018) {
-            intersection_polygons_2018.remove();
+          if (intersection_polygons) {
+            intersection_polygons.remove();
           }
         });
       },
@@ -184,12 +113,8 @@ class LeafletMap {
   };
 }
 
+const defaultAssemblyConstituency = "ac152";
 const leafletInstance = new LeafletMap("map", [12.965, 77.6]);
-
-const officeIcon = L.icon({
-  iconUrl: `${BASE_URL}office.png`,
-  iconSize:     [10, 10], // size of the icon
-});
 
 const updateAssemblyConstituency = (assemblyConstituencyId) => {
   leafletInstance.updateData([
@@ -205,9 +130,11 @@ const assemblyConstituenciesAvailable = [
   "ac152",
   "ac153",
   "ac159",
+  "ac160",
   "ac161",
   "ac163",
   "ac165",
+  "ac172",
   "ac174",
 ];
 const selectInput = document.getElementById("assemblyConstituency-dropdown");
@@ -217,4 +144,4 @@ selectInput.innerHTML = assemblyConstituenciesAvailable
 selectInput.addEventListener("change", (e) => {
   updateAssemblyConstituency(e.target.value);
 });
-updateAssemblyConstituency(assemblyConstituenciesAvailable[0]);
+updateAssemblyConstituency(defaultAssemblyConstituency);
